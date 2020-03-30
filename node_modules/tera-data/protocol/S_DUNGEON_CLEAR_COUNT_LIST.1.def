@@ -1,0 +1,6 @@
+array  dungeons
+- int32 id
+- int32 clears
+- byte  rookie
+
+uint32 pid

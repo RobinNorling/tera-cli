@@ -1,0 +1,6 @@
+array messages
+- string author
+- string message
+- int64 time # unix
+
+int32 id # See S_OPEN_BOARD

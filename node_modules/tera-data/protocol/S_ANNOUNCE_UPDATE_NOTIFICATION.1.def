@@ -1,0 +1,3 @@
+string title
+string body
+uint32 id

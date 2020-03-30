@@ -1,0 +1,12 @@
+array  members
+- string name
+- uint32 serverId
+- uint32 playerId
+- int32  level
+- int32  class
+- byte   status
+- uint64 cID
+- int32  order
+- byte   canInvite
+- int32  unk
+string info

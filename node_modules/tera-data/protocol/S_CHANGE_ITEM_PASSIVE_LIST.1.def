@@ -1,0 +1,5 @@
+array stats
+- int32 index
+- uint32 id
+
+bool success

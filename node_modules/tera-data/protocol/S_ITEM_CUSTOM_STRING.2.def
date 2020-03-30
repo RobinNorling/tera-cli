@@ -1,0 +1,5 @@
+array  customStrings
+- string string
+- uint32 dbid
+
+uint64 gameId

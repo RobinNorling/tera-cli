@@ -1,0 +1,10 @@
+array instances
+- int32 id
+
+array players
+- string name
+- byte preferredLeader
+- int32 role # 0 = Tank, 1 = DPS, 2 = Healer
+
+int32 avgWaitSec
+int32 type # 0 = Dungeon, 1 = Battleground

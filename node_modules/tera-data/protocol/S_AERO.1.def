@@ -1,0 +1,3 @@
+string aeroSet
+bool   enabled
+float  blendTime

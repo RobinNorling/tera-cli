@@ -1,0 +1,7 @@
+# this is used for the greeting skill
+array scripts
+- string script1 # these sometimes contain '\r' (wtf?)
+- string script2
+- string script3
+- string script4
+- uint32 skill

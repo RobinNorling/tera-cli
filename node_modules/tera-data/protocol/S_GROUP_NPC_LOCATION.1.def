@@ -1,0 +1,8 @@
+array npcs
+- uint64 gameId
+- vec3 loc
+- angle w
+- vec3 dest
+- int32  speed
+
+int32 type # see C_PLAYER_LOCATION.type

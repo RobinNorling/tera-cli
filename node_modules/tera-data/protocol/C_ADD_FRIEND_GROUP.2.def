@@ -1,0 +1,3 @@
+string name
+array<uint32> friends # playerIds
+uint32 id

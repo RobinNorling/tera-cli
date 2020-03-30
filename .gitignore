@@ -1,0 +1,8 @@
+settings*/
+/config.json
+client.json
+
+mods/*
+!/mods/game/mod.json
+!/mods/command/mod.json
+!/mods/client/mod.json

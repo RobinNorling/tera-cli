@@ -1,0 +1,19 @@
+array  friends
+- string name
+- string myNote
+- string theirNote
+- uint32 id
+- int32  group
+- int32  level
+- int32  race
+- int32  class
+- int32  gender
+- uint32 location1
+- uint32 location2
+- uint32 location3
+- byte   unk1
+- int64  lastOnline
+- int32  unk2
+- int32  bonds
+
+string personalNote

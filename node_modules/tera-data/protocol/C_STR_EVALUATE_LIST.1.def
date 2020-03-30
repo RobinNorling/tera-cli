@@ -1,0 +1,5 @@
+array messages
+- string message
+- int32 unk
+
+int32 unk # always 10?

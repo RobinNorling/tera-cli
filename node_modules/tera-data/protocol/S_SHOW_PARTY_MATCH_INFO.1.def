@@ -1,0 +1,9 @@
+array   listings
+- string    message # LFG message
+- string    leader # leader name
+- int32     leaderId # playerId
+- byte      isRaid
+- int16     playerCount
+
+int16   pageCurrent # page - 1
+int16   pageCount # pages - 1
