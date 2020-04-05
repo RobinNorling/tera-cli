@@ -108,9 +108,6 @@ class ClientConnection {
         if (this.closed) return;
         this.closed = true;
         this.client.close();
-        setImmediate(() => {
-            process.exit();
-        });
     }
 }
 
