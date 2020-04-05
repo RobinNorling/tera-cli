@@ -46,7 +46,7 @@ if(process.env.environment==='oci'){
 	}
 	start(settings)
 } else {
-	clientIndex = 0;
+	let clientIndex = 0;
 	for(const client of config.clients){
 		try {
 			start(require(`../../${client.settingsDir}/client.json`), clientIndex, client.settingsDir, client.modsDir)
