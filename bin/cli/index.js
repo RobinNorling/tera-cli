@@ -47,13 +47,15 @@ if(process.env.environment==='oci'){
 	start(settings)
 } else {
 	let clientIndex = 0;
-	for(const client of config.clients){
+	for(const client of config.clients) {
+		let settings = null;
 		try {
-			start(require(`../../${client.settingsDir}/client.json`), clientIndex, client.settingsDir, client.modsDir)
+			settings = require(`../../${client.settingsDir}/client.json`);
 		} catch(e) {
 			log.error("Settings not found! Run the configurator to fix this error.");
 			process.exit(1);
 		}
+		start(settings, clientIndex, client.settingsDir, client.modsDir);
 		clientIndex++;
 	}
 }
