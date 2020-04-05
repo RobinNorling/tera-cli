@@ -13,14 +13,8 @@ async function init() {
 					manifestUrl: `https://raw.githubusercontent.com/RobinNorling/tera-cli/master/manifest.json`,
 					defaultUrl: `https://raw.githubusercontent.com/RobinNorling/tera-cli/master/`,
 			})) {
-				//log.info('TERA Client has been updated. Please restart it to apply changes.')
-				//return
-				setTimeout(function () {
-    				process.on("exit", function () {
-        				require("child_process").spawn(process.argv.shift(), process.argv, { cwd: process.cwd(), detached : true, stdio: "inherit" });
-        			});
-        			process.exit();
-        		}, 5000);
+				log.info('TERA Client has been updated. Please restart it to apply changes.');
+        		process.exit();
 			}
 			log.info('Client is up to date')
 		}

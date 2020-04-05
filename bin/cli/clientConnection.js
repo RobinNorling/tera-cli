@@ -29,6 +29,31 @@ class ClientConnection {
             resolve()
         })
     }
+
+    reconnect() {
+    	this.reconnectTimer = null;
+    	const modsDir = this.modManager.modsDir;
+    	const settingsDir = this.modManager.settingsDir;
+    	const autoUpdate = this.modManager.autoUpdate;
+
+    	delete this.modManager;
+    	delete this.dispatch;
+    	delete this.connection;
+
+    	this.modManager = new ModManager({
+            modsDir: path.join(__dirname, `../../${modsDir}`),
+            settingsDir: path.join(__dirname, `../../${settingsDir}`),
+            autoUpdate: settings.autoUpdateMods
+        });
+
+        this.dispatch = new Dispatch(this.modManager);
+        this.dispatch.cli = true;
+        this.connection = new Connection(this.dispatch, { classic: this.settings.region.split('-')[1] === 'CLASSIC' });
+
+        this.preLoadMods();
+        this.serverConnect();
+    }
+
     serverConnect(serverName) {
         const server = serverName ? serverName : this.settings.serverName;
         for(const data of servers) {
@@ -53,7 +78,7 @@ class ClientConnection {
 		this.srvConn.on('timeout', () => {
             this.log.error('connection timed out.');
             if(!this.reconnectTimer) {
-            	this.reconnectTimer = setTimeout(() => { new this.prototype.constructor(this.settings, this.clientIndex, this.modManager.settingsDir, this.modManager.modsDir); }, 30 * 1000);
+            	this.reconnectTimer = setTimeout(this.reconnect, 10 * 60 * 1000);
             }
             if(this.closed) this.closeClient();
 		});
@@ -61,7 +86,7 @@ class ClientConnection {
             if(this.closed) {
                 this.log.log('disconnected.');
             	if(!this.reconnectTimer) {
-            		this.reconnectTimer = setTimeout(() => { new this.prototype.constructor(this.settings, this.clientIndex, this.modManager.settingsDir, this.modManager.modsDir); }, 30 * 1000);
+            		this.reconnectTimer = setTimeout(this.reconnect, 10 * 60 * 1000);
             	}
             }
 		});
