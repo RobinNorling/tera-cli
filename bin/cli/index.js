@@ -1,9 +1,10 @@
 const ClientConnection = require('./clientConnection.js')
 const path = require('path');
 const log = require('log')('client');
-const config = require('../../config.json')
+const config = require('../../config.json');
+const clientConnections = [];
 
-async function init(){
+async function init() {
 	if(config.autoUpdate) {
 		log.info('Checking for updates')
 		try {
@@ -61,8 +62,10 @@ if(process.env.environment==='oci'){
 }
 
 // Settings Loaded
-async function start(settings, clientIndex, settingsDir, modsDir){
-	const clientConnection = new ClientConnection(settings, clientIndex, settingsDir, modsDir);
-	await clientConnection.preLoadMods();
-	clientConnection.serverConnect();
+async function start(settings, clientIndex, settingsDir, modsDir) {
+	clientConnections[clientIndex] = new ClientConnection(settings, clientIndex, settingsDir, modsDir);
+	await clientConnections[clientIndex].preLoadMods();
+	clientConnections[clientIndex].serverConnect();
 }
+
+module.exports = clientConnections;
