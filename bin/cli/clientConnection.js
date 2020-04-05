@@ -29,17 +29,19 @@ class ClientConnection {
             resolve()
         })
     }
-    serverConnect(serverName){
-        let server = serverName?serverName:this.settings.serverName
-        for (let data of servers) {
-		    if(data.name.toLowerCase()===server) this.server = {ip: data.ip, port: data.port}
+    serverConnect(serverName) {
+        const server = serverName ? serverName : this.settings.serverName;
+        for(const data of servers) {
+		    if(data.name.toLowerCase() === server) {
+		    	this.server = {ip: data.ip, port: data.port};
+		    }
         }
         this.client = new FakeClient(this.connection);
 		this.srvConn = this.connection.connect(this.client, { host: this.server.ip, port: this.server.port });
         // load mods
         this.client.on('connect', () => {
             this.connection.dispatch.setProtocolVersion(versions[this.settings.region].protocol);
-            this.dispatch.loadAll()
+            this.dispatch.loadAll();
         })
         this.client.on('close', () => {
 			this.closeClient();
@@ -50,13 +52,17 @@ class ClientConnection {
 		});
 		this.srvConn.on('timeout', () => {
             this.log.error('connection timed out.');
-            if(this.autoReconnect) //serverReconnect()
+            if(!this.reconnectTimer) {
+            	this.reconnectTimer = setTimeout(() => { new this.prototype.constructor(this.settings, this.clientIndex, this.modManager.settingsDir, this.modManager.modsDir); }, 30 * 1000);
+            }
             if(this.closed) this.closeClient();
 		});
 		this.srvConn.on('close', () => {
-            if(this.closed){
+            if(this.closed) {
                 this.log.log('disconnected.');
-		  	    process.exit();
+            	if(!this.reconnectTimer) {
+            		this.reconnectTimer = setTimeout(() => { new this.prototype.constructor(this.settings, this.clientIndex, this.modManager.settingsDir, this.modManager.modsDir); }, 30 * 1000);
+            	}
             }
 		});
 		this.srvConn.on('error', (err) => {
