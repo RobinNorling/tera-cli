@@ -62,8 +62,8 @@ class ClientConnection {
 		    }
         }
         this.client = new FakeClient(this.connection);
-        const networkInterface = require('os').networkInterfaces()[this.settings.interface];
-        if(interface) {
+        const networkInterface = require('os').networkInterfaces()[this.settings.nic];
+        if(networkInterface) {
         	this.dispatch.interfaceAddress = networkInterface.find(x => x.family.toLowerCase() == 'ipv4').address;
 			this.srvConn = this.connection.connect(this.client, { host: this.server.ip, port: this.server.port, localAddress: networkInterface.find(x => x.family.toLowerCase() == 'ipv4').address });
         } else {
