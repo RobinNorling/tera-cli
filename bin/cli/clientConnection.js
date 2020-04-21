@@ -11,9 +11,12 @@ class ClientConnection {
         this.clientIndex = clientIndex
         this.loaded = false
         //preload mods
+        this.modsDir = path.join(__dirname, `../../${modsDir}`);
+        this.settingsDir = path.join(__dirname, `../../${settingsDir}`);
+
         this.modManager = new ModManager({
-            modsDir: path.join(__dirname, `../../${modsDir}`),
-            settingsDir: path.join(__dirname, `../../${settingsDir}`),
+            modsDir: this.modsDir,
+            settingsDir: this.settingsDir,
             autoUpdate: settings.autoUpdateMods
         })
         this.dispatch = new Dispatch(this.modManager);
@@ -32,18 +35,15 @@ class ClientConnection {
 
     reconnect() {
     	this.reconnectTimer = null;
-    	const modsDir = this.modManager.modsDir;
-    	const settingsDir = this.modManager.settingsDir;
-    	const autoUpdate = this.modManager.autoUpdate;
 
     	delete this.modManager;
     	delete this.dispatch;
     	delete this.connection;
 
     	this.modManager = new ModManager({
-            modsDir: path.join(__dirname, `../../${modsDir}`),
-            settingsDir: path.join(__dirname, `../../${settingsDir}`),
-            autoUpdate: settings.autoUpdateMods
+            modsDir: this.modsDir,
+            settingsDir: this.settingsDir,
+            autoUpdate: this.settings.autoUpdateMods
         });
 
         this.dispatch = new Dispatch(this.modManager);
@@ -62,7 +62,13 @@ class ClientConnection {
 		    }
         }
         this.client = new FakeClient(this.connection);
-		this.srvConn = this.connection.connect(this.client, { host: this.server.ip, port: this.server.port });
+        const interface = require('os').networkInterfaces()[this.settings.interface];
+        if(interface) {
+        	this.dispatch.interfaceAddress = interface.find(x => x.family.toLowerCase() == 'ipv4').address;
+			this.srvConn = this.connection.connect(this.client, { host: this.server.ip, port: this.server.port, localAddress: interface.find(x => x.family.toLowerCase() == 'ipv4').address });
+        } else {
+			this.srvConn = this.connection.connect(this.client, { host: this.server.ip, port: this.server.port });
+        }
         // load mods
         this.client.on('connect', () => {
             this.connection.dispatch.setProtocolVersion(versions[this.settings.region].protocol);
@@ -78,7 +84,7 @@ class ClientConnection {
 		this.srvConn.on('timeout', () => {
             this.log.error('connection timed out.');
             if(!this.reconnectTimer) {
-            	this.reconnectTimer = setTimeout(this.reconnect, 10 * 60 * 1000);
+            	this.reconnectTimer = setTimeout(this.reconnect, Math.floor(Math.random() * 120000 + 480000));
             }
             if(this.closed) this.closeClient();
 		});
@@ -86,7 +92,7 @@ class ClientConnection {
             if(this.closed) {
                 this.log.log('disconnected.');
             	if(!this.reconnectTimer) {
-            		this.reconnectTimer = setTimeout(this.reconnect, 10 * 60 * 1000);
+	            	this.reconnectTimer = setTimeout(this.reconnect, Math.floor(Math.random() * 120000 + 480000));
             	}
             }
 		});

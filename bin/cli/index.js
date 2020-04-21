@@ -42,6 +42,7 @@ if(process.env.environment==='oci'){
 	start(settings)
 } else {
 	let clientIndex = 0;
+	const waitStart = Date.now();
 	for(const client of config.clients) {
 		let settings = null;
 		try {
@@ -50,15 +51,23 @@ if(process.env.environment==='oci'){
 			log.error("Settings not found! Run the configurator to fix this error.");
 			process.exit(1);
 		}
-		start(settings, clientIndex, client.settingsDir, client.modsDir);
+		start(settings, clientIndex, client.settingsDir, client.modsDir, { start: waitStart, index: clientIndex });
 		clientIndex++;
 	}
 }
 
+function sleep_until(time) {
+	const now = Date.now();
+	return new Promise(function(resolve) { return setTimeout(resolve, (time - now) > 0 ? (time - now) : 0); });
+}
+
 // Settings Loaded
-async function start(settings, clientIndex, settingsDir, modsDir) {
+async function start(settings, clientIndex, settingsDir, modsDir, wait) {
 	clientConnections[clientIndex] = new ClientConnection(settings, clientIndex, settingsDir, modsDir);
 	await clientConnections[clientIndex].preLoadMods();
+	if(wait && wait.start > 0 && wait.index > 0) {
+		await sleep_until(wait.start + (wait.index * (Math.random() * 3350 + 5130)));
+	}
 	clientConnections[clientIndex].serverConnect();
 }
 
