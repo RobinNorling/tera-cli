@@ -62,10 +62,10 @@ class ClientConnection {
 		    }
         }
         this.client = new FakeClient(this.connection);
-        const interface = require('os').networkInterfaces()[this.settings.interface];
+        const networkInterface = require('os').networkInterfaces()[this.settings.interface];
         if(interface) {
-        	this.dispatch.interfaceAddress = interface.find(x => x.family.toLowerCase() == 'ipv4').address;
-			this.srvConn = this.connection.connect(this.client, { host: this.server.ip, port: this.server.port, localAddress: interface.find(x => x.family.toLowerCase() == 'ipv4').address });
+        	this.dispatch.interfaceAddress = networkInterface.find(x => x.family.toLowerCase() == 'ipv4').address;
+			this.srvConn = this.connection.connect(this.client, { host: this.server.ip, port: this.server.port, localAddress: networkInterface.find(x => x.family.toLowerCase() == 'ipv4').address });
         } else {
 			this.srvConn = this.connection.connect(this.client, { host: this.server.ip, port: this.server.port });
         }
