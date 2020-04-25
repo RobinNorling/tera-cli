@@ -13,6 +13,11 @@ class ClientConnection {
         //preload mods
         this.modsDir = path.join(__dirname, `../../${modsDir}`);
         this.settingsDir = path.join(__dirname, `../../${settingsDir}`);
+        this.classic = settings.region.split('-')[1] === 'CLASSIC';
+        this.autoUpdate = settings.autoUpdateMods;
+        this.serverName = this.settings.serverName;
+        this.nic = this.settings.nic;
+        this.region = this.settings.region;
 
         this.modManager = new ModManager({
             modsDir: this.modsDir,
@@ -21,7 +26,7 @@ class ClientConnection {
         })
         this.dispatch = new Dispatch(this.modManager);
         this.dispatch.cli = true;
-        this.connection = new Connection(this.dispatch, { classic: settings.region.split('-')[1] === 'CLASSIC' });
+        this.connection = new Connection(this.dispatch, { classic: this.classic });
         this.client = null
         this.srvConn = null
         this.log.log(`${this.settings.region.toUpperCase()} -> ${this.settings.serverName} | v${versions[this.settings.region].patch/100} (protocol ${versions[this.settings.region].protocol})`)
@@ -43,26 +48,26 @@ class ClientConnection {
     	this.modManager = new ModManager({
             modsDir: this.modsDir,
             settingsDir: this.settingsDir,
-            autoUpdate: this.settings.autoUpdateMods
+            autoUpdate: this.autoUpdate
         });
 
         this.dispatch = new Dispatch(this.modManager);
         this.dispatch.cli = true;
-        this.connection = new Connection(this.dispatch, { classic: this.settings.region.split('-')[1] === 'CLASSIC' });
+        this.connection = new Connection(this.dispatch, { classic: this.classic });
 
         this.preLoadMods();
         this.serverConnect();
     }
 
     serverConnect(serverName) {
-        const server = serverName ? serverName : this.settings.serverName;
+        const server = serverName ? serverName : this.serverName;
         for(const data of servers) {
 		    if(data.name.toLowerCase() === server) {
 		    	this.server = {ip: data.ip, port: data.port};
 		    }
         }
         this.client = new FakeClient(this.connection);
-        const networkInterface = require('os').networkInterfaces()[this.settings.nic];
+        const networkInterface = require('os').networkInterfaces()[this.nic];
         if(networkInterface) {
         	this.dispatch.interfaceAddress = networkInterface.find(x => x.family.toLowerCase() == 'ipv4').address;
 			this.srvConn = this.connection.connect(this.client, { host: this.server.ip, port: this.server.port, localAddress: networkInterface.find(x => x.family.toLowerCase() == 'ipv4').address });
@@ -71,7 +76,7 @@ class ClientConnection {
         }
         // load mods
         this.client.on('connect', () => {
-            this.connection.dispatch.setProtocolVersion(versions[this.settings.region].protocol);
+            this.connection.dispatch.setProtocolVersion(versions[this.region].protocol);
             this.dispatch.loadAll();
         })
         this.client.on('close', () => {
