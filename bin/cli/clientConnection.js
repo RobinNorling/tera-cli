@@ -18,8 +18,8 @@ class ClientConnection {
         this.region = this.settings.region;
 
         this.modManager = new ModManager({
-            modsDir: this.modsDir,
-            settingsDir: this.settingsDir,
+            modsDir: settings.modsDir,
+            settingsDir: settings.settingsDir,
             autoUpdate: settings.autoUpdateMods
         })
         this.dispatch = new Dispatch(this.modManager);
