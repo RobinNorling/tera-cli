@@ -63,7 +63,7 @@ function sleep_until(time) {
 
 // Settings Loaded
 async function start(settings, clientIndex, settingsDir, modsDir, wait) {
-	clientConnections[clientIndex] = new ClientConnection(settings, clientIndex, settingsDir, modsDir);
+	clientConnections[clientIndex] = new ClientConnection(settings, clientIndex, settingsDir, modsDir, config.reconnectTimeout);
 	await clientConnections[clientIndex].preLoadMods();
 	if(wait && wait.start > 0 && wait.index > 0) {
 		await sleep_until(wait.start + (wait.index * (Math.random() * 3350 + 5130)));

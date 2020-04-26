@@ -4,17 +4,15 @@ const versions = require('./versions.json')
 const servers = require('./servers.json')
 
 class ClientConnection {
-    constructor(settings, clientIndex, settingsDir, modsDir){
+    constructor(settings, clientIndex, settingsDir, modsDir, reconnectTimeout){
         this.log = require('log')(`client ${clientIndex+1}`);
-        this.closed = false
-        this.settings = settings
-        this.clientIndex = clientIndex
-        this.loaded = false
+        this.closed = false;
+        this.settings = settings;
+        this.clientIndex = clientIndex;
+        this.loaded = false;
+        this.reconnectTimeout = reconnectTimeout;
         //preload mods
-        this.modsDir = path.join(__dirname, `../../${modsDir}`);
-        this.settingsDir = path.join(__dirname, `../../${settingsDir}`);
         this.classic = settings.region.split('-')[1] === 'CLASSIC';
-        this.autoUpdate = settings.autoUpdateMods;
         this.serverName = this.settings.serverName;
         this.nic = this.settings.nic;
         this.region = this.settings.region;
@@ -31,6 +29,13 @@ class ClientConnection {
         this.srvConn = null
         this.log.log(`${this.settings.region.toUpperCase()} -> ${this.settings.serverName} | v${versions[this.settings.region].patch/100} (protocol ${versions[this.settings.region].protocol})`)
     }
+
+    sleep(ms) {
+		return new Promise(function(resolve) {
+			return setTimeout(resolve, ms);
+		});
+	}
+
     preLoadMods(){
         return new Promise(async (resolve, reject)=>{
             await this.modManager.init()
@@ -38,25 +43,16 @@ class ClientConnection {
         })
     }
 
-    reconnect() {
-    	this.reconnectTimer = null;
-
-    	delete this.modManager;
-    	delete this.dispatch;
-    	delete this.connection;
-
-    	this.modManager = new ModManager({
-            modsDir: this.modsDir,
-            settingsDir: this.settingsDir,
-            autoUpdate: this.autoUpdate
-        });
-
+    async reconnect() {
+    	this.closed = false;
         this.dispatch = new Dispatch(this.modManager);
         this.dispatch.cli = true;
         this.connection = new Connection(this.dispatch, { classic: this.classic });
-
-        this.preLoadMods();
-        this.serverConnect();
+    	
+    	await this.preLoadMods();
+    	this.serverConnect(this.serverName);
+        this.log.log(`${this.settings.region.toUpperCase()} -> ${this.settings.serverName} | v${versions[this.settings.region].patch/100} (protocol ${versions[this.settings.region].protocol})`)
+        this.reconnecting = false;
     }
 
     serverConnect(serverName) {
@@ -86,18 +82,24 @@ class ClientConnection {
 		this.srvConn.on('connect', () => {
 		  	this.log.log(`connected to ${this.srvConn.remoteAddress}:${this.srvConn.remotePort}`);
 		});
-		this.srvConn.on('timeout', () => {
+		this.srvConn.on('timeout', async () => {
             this.log.error('connection timed out.');
-            if(!this.reconnectTimer) {
-            	this.reconnectTimer = setTimeout(this.reconnect, Math.floor(Math.random() * 120000 + 480000));
-            }
             if(this.closed) this.closeClient();
+            if(this.reconnectTimeout && !this.reconnecting) {
+            	this.reconnecting = true;
+            	this.log.log('Reconnecting in ' + (this.reconnectTimeout / 1000) + ' seconds');
+            	await this.sleep(this.reconnectTimeout + Math.floor(Math.random() * 50000 + 10000));
+            	this.reconnect();
+            }
 		});
-		this.srvConn.on('close', () => {
+		this.srvConn.on('close', async () => {
             if(this.closed) {
                 this.log.log('disconnected.');
-            	if(!this.reconnectTimer) {
-	            	this.reconnectTimer = setTimeout(this.reconnect, Math.floor(Math.random() * 120000 + 480000));
+            	if(this.reconnectTimeout && !this.reconnecting) {
+            		this.reconnecting = true;
+            		this.log.log('Reconnecting in ' + (this.reconnectTimeout / 1000) + ' seconds');
+            		await this.sleep(this.reconnectTimeout + Math.floor(Math.random() * 50000 + 10000));
+            		this.reconnect();
             	}
             }
 		});
