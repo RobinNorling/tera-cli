@@ -1,15 +1,17 @@
 {
 	"data": {
 		".gitignore": "tIz0NCVIjvar2bZSxfAqeFsQcZRKPT+2qJVOBT0Ku0g=",
-		"Config.bat": "Iaqn3DoxDb9B604LSVKoX6PJqsKNxXJYmthfqcdB0aE=",
+		"Config.bat": "0Ja1DK5j7KB5daKw2GiRNDhlJEW4/VNQqJUVcr0mgQM=",
+		"Json.dll": "7za9Si5b8XKTzg0y0vJ6jP5YxY3kgISGXUu0bOte5IU=",
 		"README.md": "1SFjnNxqAKGzQ8ROTamG4q00sK6ADA7lCaQU1frUgt4=",
-		"TeraClient.bat": "mkw0x+bEGCWCzWK0xxjEVF7ypqwyE6xNaiuuG65jVcs=",
+		"TeraClient.bat": "j8o6EUYPQBNdqZxUmc80Hynkm/4gOj2qkU1vvPtFAiw=",
 		"bin/cli/clientConnection.js": "3aCzBjq4uAIASxPLoz4mUY9ktRQNFNV810EO7SQJ8d0=",
 		"bin/cli/index.js": "XTI0BKtMtEiJXNpk0ogsazg9TknEiGD1UCTN2RxbVjQ=",
 		"bin/cli/servers.json": "a366eKZOen5hUjoFvOjd0cPiBECmyVhXCddqXG3Iuqg=",
 		"bin/cli/versions.json": "nioENg/0kDmcuv67o+BFdIppuBoZORfm1W18/aKUXM8=",
 		"bin/configurator.js": "rRlv199GEpTwecKfFN0FewT8vbpj3P0u4pfOQtxsgV4=",
 		"bin/genmanifest.js": "RmnAlNEf7Mitl31MB9UQ4lFt6u3AG3BzGYpVwfpY3WY=",
+		"bin/node.exe": "Wu/hSXOj7XKtp8/F6PNYx3sbHghNJb1SdnyD06Wa8II=",
 		"node_modules/hexy/.gitignore": "9s8/9y0tJEyuFqG71gEapN0hQfXlMvQeSHRRwUNwQRc=",
 		"node_modules/hexy/.travis.yml": "9GMRX4yteNos1+kEJC3cmDnCfK0GiwLvzHurU8Sgje8=",
 		"node_modules/hexy/LICENSE": "K2MwYBwToHVMLEZp4BAXsqW1oSLg+Pj1QjrCJmRxA/8=",
@@ -1478,7 +1480,7 @@
 		"node_modules/tera-proxy-game/node_modules/tera-crypto/bin/79_arm_linux.node": "KjraG0aymQKYncnkgx3QjXZ2xxc+WCs+9sb0uRQPDDc=",
 		"node_modules/tera-proxy-game/node_modules/tera-crypto/bin/79_ia32_win32.node": "JEBZrCanW7k3+CgySX2AVc/W22dGZ9x9+dlv0vs1GMc=",
 		"node_modules/tera-proxy-game/node_modules/tera-crypto/bin/79_x64_linux.node": "x+VPvjnErwDbk5BE7if07C7usu3FajyFzjNDr68REgc=",
-		"node_modules/tera-proxy-game/node_modules/tera-crypto/bin/79_x64_win32.node": "NguFaNP1uLr9kueqTXbiZL9nBrvt6ESU8KMLqdcPTjs=",
+		"node_modules/tera-proxy-game/node_modules/tera-crypto/bin/79_x64_win32.node": "cCHURNWbb5hOu2wJHZDHrCG6E95qz09on3xaAAw0g9o=",
 		"node_modules/tera-proxy-game/node_modules/tera-crypto/binding.gyp": "/Q/6P+vfZdKAqSyWVyhSOG+EZmxIgJpEJu3LXscCPv0=",
 		"node_modules/tera-proxy-game/node_modules/tera-crypto/index.js": "lhtwDot8dlzN8cvsNQ7gi1DaqgGOSzTxG1sxSHfKjGo=",
 		"node_modules/tera-proxy-game/node_modules/tera-crypto/main.cpp": "fdeqQB2ccv8pDjw+o1+ceLjvczNbK3A8iB+lq3BjzQI=",
@@ -1588,6 +1590,7 @@
 		"node_modules/tera-vec3.js": "tHokEIQEhIhWp9oLwUVZeH47soOLJkDFBSqFo8koYFU=",
 		"node_modules/updater/index.js": "xchz5nEWf+qIaGF2QX0LJ4ZxiQBCIK8UMWtk+1g/2dk=",
 		"node_modules/updater/package.json": "CilS25rKqWhEJmuv4crgxEpHa94pBhKHLWM3vRigQSE=",
-		"package.json": "wDwdu/qmtT8cxzVIlarcUbFPKvaCiL6RHOh+LegPnRw="
+		"package.json": "wDwdu/qmtT8cxzVIlarcUbFPKvaCiL6RHOh+LegPnRw=",
+		"tera-cli.exe": "oqz1llr5meBv6hZojJPZ5zr6GOLlfcgYfHSS/3gcEl0="
 	}
 }
