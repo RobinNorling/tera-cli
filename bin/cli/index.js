@@ -3,6 +3,7 @@ const path = require('path');
 const log = require('log')('client');
 const config = require('../../config.json');
 const clientConnections = [];
+const updatedFolders = [];
 
 async function init() {
 	if(config.autoUpdate) {
@@ -63,6 +64,13 @@ function sleep_until(time) {
 
 // Settings Loaded
 async function start(settings, clientIndex, settingsDir, modsDir, wait) {
+	if(settings.autoUpdateMods) {
+		if(updatedFolders.includes(modsDir)) {
+			settings.autoUpdateMods = false;
+		} else {
+			updatedFolders.push(modsDir);
+		}
+	}
 	clientConnections[clientIndex] = new ClientConnection(settings, clientIndex, settingsDir, modsDir, config.reconnectTimeout);
 	await clientConnections[clientIndex].preLoadMods();
 	if(wait && wait.start > 0 && wait.index > 0) {

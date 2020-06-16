@@ -24,7 +24,7 @@ function addDir(manifest, base, relDir) {
 				relFile = relDir ? `${relDir}/${file}` : file
 
 			if(fs.lstatSync(absFile).isDirectory()) addDir(manifest, base, relFile)
-			else {
+			else if(relFile != 'genmanifest.js') {
 				manifest[relFile] = crypto.createHash('sha256').update(fs.readFileSync(absFile)).digest().toString('base64')
 				count++
 			}

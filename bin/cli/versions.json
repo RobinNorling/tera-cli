@@ -1,11 +1,11 @@
 {
     "eu":{
-        "patch": 9303,
-        "protocol": 367406
+        "patch": 9503,
+        "protocol": 369048
     },
     "na":{
-        "patch": 9303,
-        "protocol": 367405
+        "patch": 9503,
+        "protocol": 369047
     },
     "ru":{
         "patch": 9104,
