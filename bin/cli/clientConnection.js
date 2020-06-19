@@ -125,6 +125,8 @@ class ClientConnection {
 }
 
 function checkEqual(obj1, obj2){
+	delete obj1.autoUpdateMods;
+	delete obj2.autoUpdateMods;
     let values1 = Object.values(obj1),
         values2 = Object.values(obj2)
     if(values1.length != values2.length) return false
