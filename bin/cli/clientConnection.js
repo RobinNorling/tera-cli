@@ -43,17 +43,52 @@ class ClientConnection {
         })
     }
 
-    async reconnect() {
-    	this.closed = false;
-        this.dispatch = new Dispatch(this.modManager);
-        this.dispatch.cli = true;
-        this.connection = new Connection(this.dispatch, { classic: this.classic });
-    	
-    	await this.preLoadMods();
-    	this.serverConnect(this.serverName);
-        this.log.log(`${this.settings.region.toUpperCase()} -> ${this.settings.serverName} | v${versions[this.settings.region].patch/100} (protocol ${versions[this.settings.region].protocol})`)
-        this.reconnecting = false;
-    }
+    getStatusData(serverName) {
+		return new Promise((resolve, reject) => {
+			if(this.settings.region.toLowerCase() != 'na') { resolve(true); return; }
+			let data = '';
+			http.get('http://sls.service.enmasse.com:8080/servers/list.en', (resp) => {
+				resp.on('data', (chunk) => { data += chunk; });
+
+				resp.on('end', () => {
+					parseXML(data, function(err, res) {
+						if(err) resolve(false);
+						else {
+							if(res.serverlist && res.serverlist.server) {
+								for(const server of res.serverlist.server) {
+									if(server.name[0]._.trim().toLowerCase() == serverName) {
+										resolve(true);
+										return;
+									}
+								}
+								resolve(false);
+							} else resolve(false);
+						}
+					});
+				});
+			}).on('error', (err) => {
+				resolve(false);
+			});
+		});
+	}
+
+	async reconnect() {
+		await this.sleep(this.reconnectTimeout + Math.floor(Math.random() * 50000 + 10000));
+		const online = await this.getStatusData(this.settings.serverName.toLowerCase());
+		if(online) {
+			this.closed = false;
+			this.dispatch = new Dispatch(this.modManager);
+			this.dispatch.cli = true;
+			this.connection = new Connection(this.dispatch, { classic: this.classic });
+
+			await this.preLoadMods();
+			this.serverConnect(this.serverName);
+			this.log.log(`${this.settings.region.toUpperCase()} -> ${this.settings.serverName} | v${versions[this.settings.region].patch/100} (protocol ${versions[this.settings.region].protocol})`)
+			this.reconnecting = false;
+		} else {
+			this.reconnect();
+		}
+	}
 
     serverConnect(serverName) {
         const server = serverName ? serverName : this.serverName;
@@ -88,7 +123,7 @@ class ClientConnection {
             if(this.reconnectTimeout && !this.reconnecting) {
             	this.reconnecting = true;
             	this.log.log('Reconnecting in ' + (this.reconnectTimeout / 1000) + ' seconds');
-            	await this.sleep(this.reconnectTimeout + Math.floor(Math.random() * 50000 + 10000));
+            	// await this.sleep(this.reconnectTimeout + Math.floor(Math.random() * 50000 + 10000));
             	this.reconnect();
             }
 		});
@@ -98,7 +133,7 @@ class ClientConnection {
             	if(this.reconnectTimeout && !this.reconnecting) {
             		this.reconnecting = true;
             		this.log.log('Reconnecting in ' + (this.reconnectTimeout / 1000) + ' seconds');
-            		await this.sleep(this.reconnectTimeout + Math.floor(Math.random() * 50000 + 10000));
+            		// await this.sleep(this.reconnectTimeout + Math.floor(Math.random() * 50000 + 10000));
             		this.reconnect();
             	}
             }
